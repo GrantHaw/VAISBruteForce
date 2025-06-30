@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manual Brute-force Demo</title>
+  <style>
+    body {font-family:sans-serif;max-width:500px;margin:4rem auto;text-align:center}
+    input[type="password"]{width:100%;padding:.6rem;font-size:1rem}
+    button{margin-top:.8rem;padding:.6rem 1.2rem;font-size:1rem}
+    #msg{margin-top:1.2rem;font-weight:bold}
+  </style>
+</head>
+<body>
+  <h2>🔐 Enter the password</h2>
+  <form id="pwForm" action="check.php" method="get">
+    <input id="pw" name="pw" type="password" placeholder="Password" autofocus />
+    <button type="submit">Submit</button>
+  </form>
+  <div id="msg"></div>
+
+  <script>
+    // intercept form so the page doesn’t reload
+    document.getElementById('pwForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const pw  = document.getElementById('pw').value.trim();
+      const msg = document.getElementById('msg');
+
+      try {
+        const res  = await fetch('check.php?pw=' + encodeURIComponent(pw));
+        const text = await res.text();
+        msg.textContent = text;
+        msg.style.color = text.startsWith('Password') ? 'green' : 'red';
+      } catch { msg.textContent = 'Error contacting server'; msg.style.color='red'; }
+
+      document.getElementById('pw').value = '';
+      document.getElementById('pw').focus();
+    });
+  </script>
+</body>
+</html>
